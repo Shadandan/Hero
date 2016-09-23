@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="jquery-1.11.3.min.js"></script>
+<script>
+$(document).ready(function(){
+
+        var url = "getquestion.php";
+        var ajax = false;
+       if(window.XMLHttpRequest) { //Mozilla 浏览器
+            ajax = new XMLHttpRequest();
+                if (ajax.overrideMimeType) {//设置MiME类别
+                    ajax.overrideMimeType("text/xml");
+                }
+       }
+       else if (window.ActiveXObject) { // IE浏览器
+              try {
+                     ajax = new ActiveXObject("Msxml2.XMLHTTP");
+              } catch (e) {
+                  try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                  } catch (e) {}
+             }
+      }
+      if (!ajax) { // 异常，创建对象实例失败
+           window.alert("不能创建XMLHttpRequest对象实例.");
+           return false;
+      }
+     ajax.open("POST", url, true);
+     ajax.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+     ajax.send();
+     ajax.onreadystatechange = function() {
+     if (ajax.readyState == 4 && ajax.status == 200) {
+     //var data=JSON.parse(ajax.responseText);
+     var str=ajax.responseText;
+      var a = str.split('}');
+      localStorage.clear();
+    // var count=data.length;
+     //alert(count);
+     for (i=0;i<52;i++)
+     {
+     a[i]=a[i]+'}';
+     //alert(a[i]);
+     var data=JSON.parse(a[i]);
+     id=data.que_id;
+    // alert(id);
+     question=data.question;
+     answer1=data.answer1;
+     answer2=data.answer2;
+     answer3=data.answer3;
+     answer4=data.answer4;
+     answer=data.answer;
+     set_ques(id,question,answer1,answer2,answer3,answer4,answer); 
+    }
+    }
+    }
+ 
+});
+
+
+ function set_ques(){
+          var q_a={id:arguments[0],question:arguments[1],answer1:arguments[2],answer2:arguments[3],answer3:arguments[4],answer4:arguments[5],answer:arguments[6]};
+          localStorage.setItem("question"+arguments[0],JSON.stringify(q_a));
+          
+ }
+
+ function get_ques(){
+          var data=JSON.parse(localStorage.getItem('question0'));
+          alert(data.id+"  "+data.question+"   "+data.answer1+"   "+data.answer2+"  "+data.answer3+"    "+data.answer4+"    "+data.answer);
+ }
+ 
+ 
+</script>
+</head>
+<body>
+
+
+</body>
+</html>
